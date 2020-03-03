@@ -2,32 +2,43 @@ package com.ecrouxvis.fr.Model;
 
 public class Joueur {
     private int id;
-    private String ipAdress;
-    public int nbAllumetteRestant;
+    private String ipAddr;
 
-
+    /**
+     * Retourne l'id du joueur
+     * @return l'id du joueur
+     */
     public int getId() {
         return id;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
+    /**
+     * Retourne l'adresse IP du joueur
+     * @return l'adresse IP du joueur
+     */
     public String getIpAdress() {
-        return ipAdress;
+        return ipAddr;
     }
 
-    public void setIpAdress(String ipAdress) {
-        this.ipAdress = ipAdress;
-    }
-
-    Joueur(int id, string ipAdresse) {
+    /**
+     * Constructeur du joueur
+     * @param id l'id du joueur
+     * @param ipAddr l'adresse IP du joueur
+     */
+    public Joueur(int id, String ipAddr) {
         this.id = id;
-        this.ipAdress = ipAdresse;
+        this.ipAddr = ipAddr;
     }
 
-    public void jouer(int allumetteEnlever) {
-        this.nbAllumetteRestant -= allumetteEnlever;
+    /**
+     * Surchage de toString
+     * @return Les informations du joueur
+     */
+    @Override
+    public String toString() {
+        return "Joueur{" +
+                "id=" + id +
+                ", ipAddr='" + ipAddr + '\'' +
+                '}';
     }
 }

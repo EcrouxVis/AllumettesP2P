@@ -8,19 +8,19 @@ public class GameController {
 
     /**
      * Lance une partie
-     * @return
      */
     public void creerPartie() {
         partie = new Partie();
+        partie.nouvelleManche();
 
         // socket TCP
     }
 
     /**
      * Ajoute un joueur à la partie
-     * @param id
-     * @param ipAddr
-     * @return
+     * @param id l'identifiant du joueur
+     * @param ipAddr : l'adresse IP du joueur
+     * @return boolean en fonction du succès de l'ajout
      */
     public boolean addJoueur(int id, String ipAddr) {
         return partie.addJoueur(new Joueur(id, ipAddr));
@@ -28,7 +28,7 @@ public class GameController {
 
     /**
      * Retourne le nombre d'allumettes
-     * @return
+     * @return le nombre d'allumettes actuellement en jeu
      */
     public int getNbAllumettes() {
         return partie.getNbAllumette();
@@ -36,7 +36,7 @@ public class GameController {
 
     /**
      * Retourne le nombre de joueurs
-     * @return
+     * @return le nombre de joueurs actuellement en jeu
      */
     public int getNbJoueurs() {
         return partie.getNbJoueur();
@@ -44,14 +44,14 @@ public class GameController {
 
     /**
      * Enlève le nombre d'allumettes passé en paramètre
-     * @param nb
-     * @return
+     * @param nb le nombre d'allumettes à enlever
+     * @return le nombre d'allumettes en jeu ou -1 si erreur
      */
-    public int enleverAllumettes(int nb) {
+    public int enleverAllumettes(int nb, int tour) {
         if( nb > 0 && nb < 4 ) {
             // Plus d'allumettes --> partie terminée
             if( getNbAllumettes() == 0 ) {
-                partie.nouvelleManche();
+                partie.nouvelleManche( partie.getJoueur(tour) );
             } else {
                 partie.removeAllumette(nb);
             }
@@ -62,7 +62,7 @@ public class GameController {
 
     /**
      * Retourne une chaine de caractères avec le gagnant
-     * @return
+     * @return une chaine de caractères avec les infos du gagnant
      */
     public String getGagnant() {
         return "Le joueur " + partie.getJoueur(0).toString() + " a gagné la partie !"

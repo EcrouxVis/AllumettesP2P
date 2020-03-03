@@ -31,7 +31,7 @@ public class Partie {
 
     public Joueur getJoueur (int position) { return joueur.get(position); }         //retourne le joueur de la liste a la position cherchee
 
-    Partie () { }
+    public Partie () { }
 
  /*   Partie (List<Joueur> joueurs, List<Joueur> spects) {
 
