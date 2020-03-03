@@ -49,27 +49,27 @@ public class Partie {
             return 1; //return id
     }
 
-    String Partie (List joueur, List spect) {
+    Joueur Partie (List<Joueur> joueur, List<Joueur> spect) {   //return le joueur vainqueur
 
         this.nbJoueur = joueur.size();
 
-        
+        this.nbAllumette = this.nbJoueur * 6 + 1;
 
         if (this.nbJoueur == 2){
-            String id_vainqueur = "";
+            Joueur vainqueur = null;
 
             //partie a 2 joueurs
 
-            return  id_vainqueur;
+            return  vainqueur;
         }
 
-        String id_perdant = "";
+        Joueur perdant = null;
         //partie a au moins 3 joueurs
         // id_perdant = id du joueur ayant perdu
 
-        joueur.remove(id_perdant);
-        spect.add(id_perdant);
+        joueur.remove(perdant);              //le joueur qui a perdu est enleve de la liste des participants
+        spect.add(perdant);                  //le joueur qui a perdu est ajoute a la liste de spectateur
 
-        return Partie(joueur,spect);
+        return Partie(joueur,spect);            //on lance une autre partie sans le joueur qui a perdu
     }
 }
