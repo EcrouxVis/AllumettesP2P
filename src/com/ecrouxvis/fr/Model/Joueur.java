@@ -3,6 +3,8 @@ package com.ecrouxvis.fr.Model;
 public class Joueur {
     private int id;
     private String ipAdress;
+    public int nbAllumetteRestant;
+
 
     public int getId() {
         return id;
@@ -20,5 +22,12 @@ public class Joueur {
         this.ipAdress = ipAdress;
     }
 
-    Joueur
+    Joueur(int id, string ipAdresse) {
+        this.id = id;
+        this.ipAdress = ipAdresse;
+    }
+
+    public void jouer(int allumetteEnlever) {
+        this.nbAllumetteRestant -= allumetteEnlever;
+    }
 }
