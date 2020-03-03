@@ -3,18 +3,28 @@ package com.ecrouxvis.fr.Controller;
 import com.ecrouxvis.fr.Model.Joueur;
 import com.ecrouxvis.fr.Model.Partie;
 
+import java.io.*;
+import java.net.Inet4Address;
+import java.net.ServerSocket;
+import java.net.Socket;
+
 public class GameController {
     private Partie partie;
     boolean joueurJoue = false;
     boolean monEtat = true;         //je n'ai pas perdu, false si perdu
 
-    String ip_voisin = "";
+    private String ipVoisin;
+
+    Socket client;
+    ServerSocket listener;
 
 
-    public String getIp_voisin () {
-        //vue fait ton taf
+    public void setIpVoisin(String ipVoisin) {
+        this.ipVoisin = ipVoisin;
+    }
 
-        return ip_voisin;
+    public String getIpVoisin () {
+        return ipVoisin;
     }
 
 
@@ -25,29 +35,48 @@ public class GameController {
         partie = new Partie();
         partie.nouvelleManche();
 
-        while (partie.getNbJoueur() > 0){
-            //attendre jusqu'a lire info
-            int[] tab = received();
-            partie.setEtat(tab);
+        try {
+            listener = new ServerSocket(50000);
+            client = listener.accept();
 
-            if (monEtat){           //je ne joue que si je n'ai pas encore perdu
-                //jouer
-                while (!joueurJoue) {
-                    //...
+            InputStream in = client.getInputStream();
+            OutputStream out = client.getOutputStream();
+
+            BufferedReader bfr = new BufferedReader(new InputStreamReader(in));
+
+            PrintWriter pw = new PrintWriter(new OutputStreamWriter(out));
+
+            while (partie.getNbJoueur() > 0){
+
+                //attendre jusqu'a lire info
+                int nbJoueurs = bfr.read();
+                partie.setNbJoueur(nbJoueurs);
+                int nbAllumettes = bfr.read();
+                partie.setNbAllumette(nbAllumettes);
+
+                if (monEtat){           //je ne joue que si je n'ai pas encore perdu
+                    // attendre l'input
+                    while (!joueurJoue) {
+                        //...
+                    }
+
+                    if (partie.getNbAllumette() == 0){
+                        this.monEtat = false;
+                        partie.nouvelleManche();
+                    }
                 }
-                //lire info vue
-                int nombreLue = 0;
-                enleverAllumettes(nombreLue);
-                if (partie.getNbAllumette() == 0){
-                    this.monEtat = false;
-                    partie.nouvelleManche();
-                }
+
+                pw.print(getNbJoueurs());
+                pw.print(getNbAllumettes());
             }
 
-            send(partie.getEtat());
+            pw.close();
+            bfr.close();
+            out.close();
+            in.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-
-        // socket TCP
     }
 
     /**
@@ -84,6 +113,7 @@ public class GameController {
      */
     public int enleverAllumettes(int nb) {
         if( nb > 0 && nb < 4 ) {
+            joueurJoue = true;
             partie.removeAllumette(nb);
             return getNbAllumettes();
         }

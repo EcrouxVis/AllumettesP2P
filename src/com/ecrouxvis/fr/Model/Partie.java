@@ -20,11 +20,15 @@ public class Partie {
     public boolean removeSpect (Joueur e) { return spect.remove(e); }               //permet de retirer un spectateur á la manche
     */
 
+    public void setNbAllumette(int nbAllumette) { this.nbAllumette = nbAllumette; }
+
     public int getNbAllumette() { return this.nbAllumette; }                        //renvoie le nombre d'allumette de la manche
 
     public void removeAllumette(int nombre) { this.nbAllumette -= nombre; }         //permet d'enlever un certain nombre d'allumette
 
     public void calculNbAllumette() {this.nbAllumette = this.nbJoueur * 6 + 1;}     //initialise le bon nombre d'allumette pour la manche a jouer
+
+    public void setNbJoueur(int nbJoueur) { this.nbJoueur = nbJoueur; }
 
     public int getNbJoueur() { return nbJoueur; }                                   //renvoie le nombre de joueur de la manche
     /*
@@ -55,16 +59,4 @@ public class Partie {
 
         nouvelleManche();
     }   */
-
-
-    public int[] getEtat () {
-        int[] tab = {this.nbJoueur,this.nbAllumette};
-        return tab;
-    }
-
-    public void setEtat (int[] tab) {
-        this.nbAllumette = tab[1];
-        this.nbJoueur = tab[0];
-    }
-
 }
