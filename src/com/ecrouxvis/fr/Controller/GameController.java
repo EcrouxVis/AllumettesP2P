@@ -3,57 +3,68 @@ package com.ecrouxvis.fr.Controller;
 import com.ecrouxvis.fr.Model.Joueur;
 import com.ecrouxvis.fr.Model.Partie;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class GameController {
     private Partie partie;
-    private List<Joueur> joueurs = new ArrayList<Joueur>();
-    private List<Spectateur> spectateurs = new ArrayList<Spectateur>();
 
-    public GameController() {
-        partie = new Partie(joueurs, spectateurs);
-    }
+    /**
+     * Lance une partie
+     * @return
+     */
+    public void creerPartie() {
+        partie = new Partie();
 
-    public boolean createServer() {
         // socket TCP
-        return true;
     }
 
+    /**
+     * Ajoute un joueur à la partie
+     * @param id
+     * @param ipAddr
+     * @return
+     */
     public boolean addJoueur(int id, String ipAddr) {
-        return joueurs.add(new Joueur(id, ipAddr));
+        return partie.addJoueur(new Joueur(id, ipAddr));
     }
 
-    public boolean removeJoueur(int position) {
-        return addSpectateur( joueurs.remove(position) );
-    }
-
-    public boolean addSpectateur(Joueur joueur) {
-        return spectateurs.add(joueur);
-    }
-
+    /**
+     * Retourne le nombre d'allumettes
+     * @return
+     */
     public int getNbAllumettes() {
         return partie.getNbAllumette();
     }
 
+    /**
+     * Retourne le nombre de joueurs
+     * @return
+     */
     public int getNbJoueurs() {
         return partie.getNbJoueur();
     }
 
-    public String getJoueur(int position) {
-        if( position > 0 && position < joueurs.size() ) {
-            return joueurs.get(position).toString();
-        } else {
-            return "Position incorrecte";
+    /**
+     * Enlève le nombre d'allumettes passé en paramètre
+     * @param nb
+     * @return
+     */
+    public int enleverAllumettes(int nb) {
+        if( nb > 0 && nb < 4 ) {
+            // Plus d'allumettes --> partie terminée
+            if( getNbAllumettes() == 0 ) {
+                partie.nouvelleManche();
+            } else {
+                partie.removeAllumette(nb);
+            }
+            return getNbAllumettes();
         }
+        return -1; // Cas erreur
     }
 
-    public boolean enleverAllumettes(int nb) {
-        if( nb < 1 || nb > 3 ) {
-            partie.enleverAllumettes(nb);
-            return true;
-        } else {
-            return false;
-        }
+    /**
+     * Retourne une chaine de caractères avec le gagnant
+     * @return
+     */
+    public String getGagnant() {
+        return "Le joueur " + partie.getJoueur(0).toString() + " a gagné la partie !"
     }
 }
