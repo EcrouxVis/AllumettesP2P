@@ -20,5 +20,5 @@ public class Joueur {
         this.ipAdress = ipAdress;
     }
 
-
+    Joueur
 }
