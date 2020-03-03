@@ -11,18 +11,18 @@ import java.io.IOException;
 
 public class Fenetre extends JFrame
 {
-    private BufferedImage ImgAllumette;
 
-    public void Fenetre()
+    public Fenetre()
     {
         try
         {
-            this.setTitle("Jeux des allumetes");
-            this.ImgAllumette = ImageIO.read(new File("Images/Allumette.png"));
-            this.setIconImage(this.ImgAllumette);
+            this.setTitle("Allumettes THE VIDEO GAME");
+            BufferedImage imgAllumette = ImageIO.read(new File("Images/Allumette.png"));
+            this.setIconImage(imgAllumette);
             this.setSize(1280,720);
+            this.setLocationRelativeTo(null); //permet d'afficher la fenêtre au centre
             JPanel pan = new JPanel();
-            pan.setBackground(Color.getColor("00d2ff"));
+            pan.setBackground(new Color(0,210,255)); //couleur du background
             this.setContentPane(pan);
             this.setResizable(false);
             this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
