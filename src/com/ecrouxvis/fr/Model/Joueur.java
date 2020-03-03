@@ -1,4 +1,4 @@
-package com.ecrouxvis.fr;
+package com.ecrouxvis.fr.Model;
 
 public class Joueur {
     private int id;
