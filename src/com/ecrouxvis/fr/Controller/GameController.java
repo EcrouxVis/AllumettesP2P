@@ -40,7 +40,7 @@ public class GameController {
                 enleverAllumettes(nombreLue);
                 if (partie.getNbAllumette() == 0){
                     this.monEtat = false;
-                    send(partie.nouvelleManche(););
+                    partie.nouvelleManche();
                 }
             }
 
