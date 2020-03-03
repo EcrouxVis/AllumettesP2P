@@ -1,6 +1,8 @@
+package com.ecrouxvis.fr;
+
 public class Joueur {
     private int id;
-    private string ipAdress;
+    private String ipAdress;
 
     public int getId() {
         return id;
@@ -10,11 +12,11 @@ public class Joueur {
         this.id = id;
     }
 
-    public string getIpAdress() {
+    public String getIpAdress() {
         return ipAdress;
     }
 
-    public void setIpAdress(string ipAdress) {
+    public void setIpAdress(String ipAdress) {
         this.ipAdress = ipAdress;
     }
 

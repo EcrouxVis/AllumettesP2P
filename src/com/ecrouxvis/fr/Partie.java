@@ -1,3 +1,5 @@
+package com.ecrouxvis.fr;
+
 public class Partie {
     private int nbAllumette;
     private int tour = 0;
@@ -28,5 +30,5 @@ public class Partie {
         this.maxAlumette = maxAlumette;
     }
 
-    Partie(int nbJoueur, int nbAllumette, int maxAlumette)
+    Partie(int nbJoueur, int nbAllumette, int maxAlumette){}
 }
