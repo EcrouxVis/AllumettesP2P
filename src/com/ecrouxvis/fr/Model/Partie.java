@@ -62,7 +62,9 @@ public class Partie {
         return tab;
     }
 
-
-
+    public void setEtat (int[] tab) {
+        this.nbAllumette = tab[1];
+        this.nbJoueur = tab[0];
+    }
 
 }

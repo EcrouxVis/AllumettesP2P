@@ -27,7 +27,8 @@ public class GameController {
 
         while (partie.getNbJoueur() > 0){
             //attendre jusqu'a lire info
-            partie = received();
+            int[] tab = received();
+            partie.setEtat(tab);
 
             if (monEtat){           //je ne joue que si je n'ai pas encore perdu
                 //jouer
