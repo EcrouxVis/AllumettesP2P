@@ -11,7 +11,13 @@ public class Partie {
     private List<Joueur> spect = new ArrayList<Joueur>();       //liste des spectateurs de la manche (les joueurs ayant perdus)
 
 
-    public boolean addJoueur (Joueur e) { return joueur.add(e); }                   //permet d'ajouter un joueur á la partie
+    public boolean addJoueur (Joueur e) { return joueur.add(e); }                   //permet d'ajouter un joueur á la manche
+
+    public boolean removeJoueur (Joueur e) { return joueur.remove(e); }             //permet de retirer un joueur á la manche
+
+    public boolean addSpect (Joueur e) { return spect.add(e); }                     //permet d'ajouter un spectateur á la manche
+
+    public boolean removeSpect (Joueur e) { return spect.remove(e); }               //permet de retirer un spectateur á la manche
 
     public int getNbAllumette() { return this.nbAllumette; }                        //renvoie le nombre d'allumette de la manche
 
@@ -23,51 +29,33 @@ public class Partie {
 
     public void calculNbJoueur() { this.nbJoueur = this.joueur.size(); }            //permet de calculer le nombre de joueur de la manche
 
+    public Joueur getJoueur (int position) { return joueur.get(position); }         //retourne le joueur de la liste a la position cherchee
 
-    Partie(){
+    Partie () { }
 
-    }
-
-    Partie (List<Joueur> joueurs, List<Joueur> spects) {
+ /*   Partie (List<Joueur> joueurs, List<Joueur> spects) {
 
         this.joueur = joueurs;
         this.spect = spects;
 
-        this.nbJoueur = joueur.size();
+    }  */
 
-        this.nbAllumette = this.nbJoueur * 6 + 1;
-    }
-
-    public Joueur jouerManche (){                   //retourne le joueur vainqueur de la manche
+    public void nouvelleManche(){
 
         calculNbJoueur();                           //met a jour le nombre de joueur pour cette manche
         calculNbAllumette();                        //met a jour le nombre d'allumette pour cette manche
-
-        if (this.nbJoueur == 2){
-
-
-            //manche a 2 joueurs
-
-
-
-            Joueur vainqueur = null;
-            return  vainqueur;
-        }
-
-
-        //la manche a au moins 3 joueurs
-
-
-
-
-
-        //perdant = joueur ayant perdu
-        Joueur perdant = null;
-        this.joueur.remove(perdant);                //le joueur qui a perdu est enleve de la liste des participants
-        this.spect.add(perdant);                    //le joueur qui a perdu est ajoute a la liste de spectateur
-
-        return null;                                //il n'y a pas encore de vainqueur
     }
+
+
+    public void nouvelleManche(Joueur j){
+
+        removeJoueur(j);                            //enleve le joueur de la liste des joueur pour la manche
+        addSpect(j);                                //ajoute le joueur a la liste des spectateur
+
+        nouvelleManche();
+    }
+
+
 
 
 
