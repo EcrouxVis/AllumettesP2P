@@ -125,9 +125,13 @@ public class GameController {
             bfr = new BufferedReader(new InputStreamReader(in));
             pw = new PrintWriter(new OutputStreamWriter(out));
 
+            System.out.println("buffers crees");
+
             int jeton = bfr.read();
+            System.out.println("jeton envoye");
             jeton ++;
             pw.print(jeton);
+            System.out.println("jeton recu");
 
             premierJoueur = false;
             jouerPartie();
