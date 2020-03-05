@@ -5,6 +5,7 @@ import com.ecrouxvis.fr.Model.Partie;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Scanner;
 
 public class GameController {
     private Partie partie;
@@ -158,7 +159,9 @@ public class GameController {
                 // Je ne joue que si je n'ai pas encore perdu
                 if (monEtat) {
                     // attendre l'input pour enlever des allumettes
-                    while (!joueurJoue) {}
+                    retirerAllumette();
+
+                    //while (!joueurJoue) {}
 
                     // S'il n'y a plus d'allumettes
                     // Le joueur actuel a perdu
@@ -174,6 +177,34 @@ public class GameController {
             }
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    private void retirerAllumette() {
+        // Indique la fin de partie si égal à true
+        boolean finPartie = false;
+
+        Scanner sca = new Scanner(System.in);
+
+        int nbAllumDem = 0;
+
+        System.out.println("Il y a " + this.getNbAllumettes() + " allumettes");
+
+        while(!finPartie){
+            do {
+                System.out.println("Combien d'allumettes voulez vous enlever : 1, 2, ou 3 : ");
+                nbAllumDem = sca.nextInt();
+            } while(nbAllumDem<1 || nbAllumDem>3);
+
+            int nbAllumRestantes = this.enleverAllumettes(nbAllumDem);
+
+            // Si on rencontre le cas d'erreur, la partie est terminé
+            if( nbAllumRestantes == -1 ) {
+                finPartie = true;
+            } else {
+                // Sinon, la partie continue
+                System.out.println("Il reste "+ nbAllumRestantes +" allumettes");
+            }
         }
     }
 

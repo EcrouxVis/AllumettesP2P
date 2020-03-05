@@ -26,6 +26,9 @@ public class Main {
         String ipAdrr = sc.nextLine();
         gameController.setIpVoisin(ipAdrr);
 
+        // Connexion au voisin
+        gameController.connecterClient();
+        System.out.println("connection voisin");
 
         // Création de la partie ...
         if(choix.equals("c")) { gameController.creerPartie(); }
@@ -33,31 +36,5 @@ public class Main {
         // Rejoindre partie
         if (choix.equals("r")) { gameController.rejoindrePartie(); }
 
-        // Connexion au voisin
-        gameController.connecterClient();
-        System.out.println("connection voisin");
-
-        int nbAllumDem = 0;
-        System.out.println("Il y a " + gameController.getNbAllumettes() + " allumettes");
-
-        // Indique la fin de partie si égal à true
-        boolean finPartie = false;
-
-        while(!finPartie){
-            do {
-                System.out.println("Combien d'allumettes voulez vous enlever : 1, 2, ou 3 : ");
-                nbAllumDem = sc.nextInt();
-            } while(nbAllumDem<1 || nbAllumDem>3);
-
-            int nbAllumRestantes = gameController.enleverAllumettes(nbAllumDem);
-
-            // Si on rencontre le cas d'erreur, la partie est terminé
-            if( nbAllumRestantes == -1 ) {
-                finPartie = true;
-            } else {
-                // Sinon, la partie continue
-                System.out.println("Il reste "+ nbAllumRestantes +" allumettes");
-            }
-        }
     }
 }
