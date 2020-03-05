@@ -18,15 +18,23 @@ public class Main {
         // Instanciation du controller
         GameController gameController = new GameController();
 
+        System.out.print("creer (c) ou rejoindre (r) une partie");
+        String choix = sc.nextLine();
+
+
         System.out.print("Entrez l'adresse IP du voisin : ");
         String ipAdrr = sc.nextLine();
         gameController.setIpVoisin(ipAdrr);
+        
+
+        // Création de la partie ...
+        if(choix.equals("c")) { gameController.creerPartie(); }
+
+        // Rejoindre partie
+        if (choix.equals("r")) { gameController.rejoindrePartie(); }
 
         // Connexion au voisin
         gameController.connecterClient();
-
-        // Création de la partie ...
-        gameController.creerPartie();
 
         int nbAllumDem = 0;
         System.out.println("Il y a " + gameController.getNbAllumettes() + " allumettes");
