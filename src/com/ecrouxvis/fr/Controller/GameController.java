@@ -1,36 +1,54 @@
 package com.ecrouxvis.fr.Controller;
 
-import com.ecrouxvis.fr.Model.Joueur;
 import com.ecrouxvis.fr.Model.Partie;
 
 import java.io.*;
-import java.net.Inet4Address;
 import java.net.ServerSocket;
 import java.net.Socket;
 
 public class GameController {
     private Partie partie;
-    boolean joueurJoue = false;
-    boolean monEtat = true;         //je n'ai pas perdu, false si perdu
+
+    // Propre au joueur
+    private boolean joueurJoue = false;
+    private boolean monEtat = true;         //je n'ai pas perdu, false si perdu
+    private boolean premierJoueur = true;
 
     private String ipVoisin;
 
-    Socket client;
-    ServerSocket listener;
+    // Sockets du joueur
+    private Socket client;
+    private ServerSocket listener;
+
+    // Buffer des clients
+    private BufferedReader bfr;
+    private PrintWriter pw;
 
 
+    /**
+     * Initialise l'ip du voisin
+     * @param ipVoisin l'ip du voisin
+     */
     public void setIpVoisin(String ipVoisin) {
         this.ipVoisin = ipVoisin;
     }
 
+    /**
+     * Retour l'ip du voisin
+     * @return l'ip du voisin
+     */
     public String getIpVoisin () {
         return ipVoisin;
     }
 
 
+    /**
+     * Connexion à un autre hôte
+     */
     public void connecterClient() {
         try {
             client = new Socket( getIpVoisin(), 50000 );
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -41,34 +59,102 @@ public class GameController {
      */
     public void creerPartie() {
         partie = new Partie();
-        partie.nouvelleManche();
 
         try {
             listener = new ServerSocket(50000);
             client = listener.accept();
             System.out.println(client);
 
+            // Initialisation des buffer du client (voisin précédent)
+            // Buffer client
             InputStream in = client.getInputStream();
             OutputStream out = client.getOutputStream();
+            bfr = new BufferedReader(new InputStreamReader(in));
+            pw = new PrintWriter(new OutputStreamWriter(out));
 
-            BufferedReader bfr = new BufferedReader(new InputStreamReader(in));
+            // Création d'un jeton pour avoir le nombre de joueurs totaux
+            int jeton = 1;
+            pw.print(jeton);
 
-            PrintWriter pw = new PrintWriter(new OutputStreamWriter(out));
+            // Attente du retour du jeton
+            jeton = bfr.read();
+            System.out.println("Nombre de joueurs total : " + jeton);
 
-            while (partie.getNbJoueur() > 0){
+            // Initialise le nombre de joueurs au total
+            partie.setNbJoueur(jeton);
 
-                //attendre jusqu'a lire info
-                int nbJoueurs = bfr.read();
-                partie.setNbJoueur(nbJoueurs);
-                int nbAllumettes = bfr.read();
-                partie.setNbAllumette(nbAllumettes);
+            jouerPartie();
 
-                if (monEtat){           //je ne joue que si je n'ai pas encore perdu
-                    // attendre l'input
-                    while (!joueurJoue) {
-                        //...
-                    }
+            // Fermeture des buffers
+            pw.close();
+            bfr.close();
+            out.close();
+            in.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
+    /**
+     * Rejoint une partie en cours
+     */
+    public void rejoindrePartie() {
+        partie = new Partie();
+
+        try {
+            listener = new ServerSocket(50000);
+            client = listener.accept();
+            System.out.println(client);
+
+            // Initialisation des buffer du client (voisin précédent)
+            InputStream in = client.getInputStream();
+            OutputStream out = client.getOutputStream();
+            bfr = new BufferedReader(new InputStreamReader(in));
+            pw = new PrintWriter(new OutputStreamWriter(out));
+
+            premierJoueur = false;
+            jouerPartie();
+
+            // Fermeture des buffers
+            pw.close();
+            bfr.close();
+            out.close();
+            in.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Jouer une partie en tant que client
+     */
+    public void jouerPartie() {
+        try {
+            // Partie en cours
+            while (partie.getNbJoueur() > 1){
+
+                // Lecture des informations de partie
+
+                if(premierJoueur) {
+                    // Nombre de joueurs
+                    int nbJoueurs = bfr.read();
+                    System.out.println(nbJoueurs);
+                    partie.setNbJoueur(nbJoueurs);
+
+                    // Nombre d'allumettes restantes
+                    int nbAllumettes = bfr.read();
+                    System.out.print(nbAllumettes);
+                    partie.setNbAllumette(nbAllumettes);
+                }
+
+                // Je ne joue que si je n'ai pas encore perdu
+                if (monEtat) {
+                    // attendre l'input pour enlever des allumettes
+                    while (!joueurJoue) {}
+
+                    // S'il n'y a plus d'allumettes
+                    // Le joueur actuel a perdu
+                    // Puis on commence une nouvelle manche
                     if (partie.getNbAllumette() == 0){
                         this.monEtat = false;
                         partie.nouvelleManche();
@@ -78,11 +164,6 @@ public class GameController {
                 pw.print(getNbJoueurs());
                 pw.print(getNbAllumettes());
             }
-
-            pw.close();
-            bfr.close();
-            out.close();
-            in.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
