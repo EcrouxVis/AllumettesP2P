@@ -3,8 +3,7 @@ package com.ecrouxvis.fr.Controller;
 import com.ecrouxvis.fr.Model.Partie;
 
 import java.io.*;
-import java.net.ServerSocket;
-import java.net.Socket;
+import java.net.*;
 import java.util.Scanner;
 
 public class GameController {
@@ -14,6 +13,8 @@ public class GameController {
     private boolean joueurJoue = false;
     private boolean monEtat = true;         //je n'ai pas perdu, false si perdu
     private boolean premierJoueur = true;
+
+    Scanner sca = new Scanner(System.in);
 
     private String ipVoisin;
 
@@ -25,6 +26,9 @@ public class GameController {
     // Buffer des clients
     private BufferedReader bfr;
     private PrintWriter pw;
+
+    public GameController() throws SocketException {
+    }
 
 
     /**
@@ -50,7 +54,7 @@ public class GameController {
     public void connecterClient() {
         System.out.println("connection client");
         try {
-            client2 = new Socket( getIpVoisin(), 50000 );
+            client = new Socket( getIpVoisin(), 50000 );
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -85,17 +89,60 @@ public class GameController {
 
             // Création d'un jeton pour avoir le nombre de joueurs totaux
             int jeton = 1;
-            pw.print(jeton);
-            pw.flush();
-            System.out.println("jeton envoye");
+            //pw.print(Integer.toString(jeton));
+            //pw.flush();
+            //System.out.println("jeton envoye");
+
+
+            byte[] data = Integer.toString(jeton).getBytes();
+
+            try {
+                InetSocketAddress sa = new InetSocketAddress(getIpVoisin(), 50000);
+                DatagramSocket s = new DatagramSocket();
+                DatagramPacket paquet = new DatagramPacket(data, data.length, sa);
+                s.send(paquet);									/*	on envoie l'entier au serveur	*/
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                System.exit(1);
+            }
+
+        System.out.println("jeton envoye");
+
+
 
             // Attente du retour du jeton
-            jeton = bfr.read();
+            //jeton = Integer.parseInt(bfr.readLine());;
+            //System.out.println("jeton recu");
+            //System.out.println("Nombre de joueurs total : " + jeton);
+
+
+            DatagramSocket s = new DatagramSocket(50000);
+            byte[] datarecu = new byte[8];
+            DatagramPacket paquet = new DatagramPacket(datarecu, datarecu.length);
+
+
+            System.out.println("Attente de réception du paquet.");
+            try {
+                s.receive(paquet);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            String st = new String(paquet.getData(), 0, paquet.getLength());
+            System.out.println("J'ai reçu [" + st + "]");
+
+
+            jeton = Integer.parseInt(st);
             System.out.println("jeton recu");
             System.out.println("Nombre de joueurs total : " + jeton);
 
+
+
+
+
+
             // Initialise le nombre de joueurs au total
             partie.setNbJoueur(jeton);
+            partie.calculNbAllumette();
 
             jouerPartie();
 
@@ -118,12 +165,12 @@ public class GameController {
 
         try {
             // Connexion au voisin
-            //this.connecterClient();
-            //System.out.println("connection voisin");
+            this.connecterClient();
+            System.out.println("connection voisin");
 
-            listener = new ServerSocket(50000);
-            client = listener.accept();
-            System.out.println(client);
+            //listener = new ServerSocket(50000);
+            //client = listener.accept();
+            //System.out.println(client);
 
             // Initialisation des buffer du client (voisin précédent)
             InputStream in = client.getInputStream();
@@ -133,12 +180,66 @@ public class GameController {
 
             System.out.println("buffers crees");
 
-            int jeton = bfr.read();
+            int jeton = Integer.parseInt(bfr.readLine());
             System.out.println("jeton recu");
             jeton ++;
-            pw.print(jeton);
+            pw.print(String.valueOf(jeton));
             pw.flush();
             System.out.println("jeton envoye");
+
+            // Attente du retour du jeton
+            //jeton = Integer.parseInt(bfr.readLine());;
+            //System.out.println("jeton recu");
+            //System.out.println("Nombre de joueurs total : " + jeton);
+
+
+            DatagramSocket s = new DatagramSocket(50000);
+            byte[] datarecu = new byte[8];
+            DatagramPacket paquet = new DatagramPacket(datarecu, datarecu.length);
+
+
+            System.out.println("Attente de réception du paquet.");
+            try {
+                s.receive(paquet);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            String st = new String(paquet.getData(), 0, paquet.getLength());
+            System.out.println("J'ai reçu [" + st + "]");
+
+
+            jeton = Integer.parseInt(st);
+            System.out.println("jeton recu");
+            System.out.println("Nombre de joueurs total : " + jeton);
+
+            jeton++;
+
+            byte[] data = Integer.toString(jeton).getBytes();
+
+            try {
+                InetSocketAddress sa = new InetSocketAddress(getIpVoisin(), 50000);
+                DatagramSocket s2 = new DatagramSocket();
+                DatagramPacket paquet2 = new DatagramPacket(data, data.length, sa);
+                s2.send(paquet2);									/*	on envoie l'entier au serveur	*/
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                System.exit(1);
+            }
+
+            System.out.println("jeton envoye");
+
+
+
+
+
+
+
+
+
+
+
+
+
 
             premierJoueur = false;
             jouerPartie();
@@ -169,15 +270,17 @@ public class GameController {
                     System.out.println("reception infos");
 
                     // Nombre de joueurs
-                    int nbJoueurs = bfr.read();
+                    int nbJoueurs = Integer.parseInt(bfr.readLine());
                     System.out.println(nbJoueurs);
                     partie.setNbJoueur(nbJoueurs);
 
                     // Nombre d'allumettes restantes
-                    int nbAllumettes = bfr.read();
+                    int nbAllumettes = Integer.parseInt(bfr.readLine());
                     System.out.print(nbAllumettes);
                     partie.setNbAllumette(nbAllumettes);
                 }
+
+                premierJoueur=false;
 
                 // Je ne joue que si je n'ai pas encore perdu
                 if (monEtat) {
@@ -196,8 +299,11 @@ public class GameController {
                     }
                 }
                 System.out.println("envoi des infos");
-                pw.print(getNbJoueurs());
-                pw.print(getNbAllumettes());
+                //pw.print(getNbJoueurs());
+                pw.print(String.valueOf(getNbJoueurs()));
+                pw.flush();
+                pw.print(String.valueOf(getNbAllumettes()));
+                pw.flush();
             } while (partie.getNbJoueur() > 1);
         } catch (IOException e) {
             e.printStackTrace();
@@ -208,16 +314,13 @@ public class GameController {
 
     private int retirerAllumette() {
 
-        Scanner sca = new Scanner(System.in);
-
         int nbAllumDem = 0;
 
-            do {
-                System.out.println("Combien d'allumettes voulez vous enlever : 1, 2, ou 3 : ");
-                nbAllumDem = sca.nextInt();
-            } while(nbAllumDem<1 || nbAllumDem>3);
-
-            return nbAllumDem;
+        do {
+            System.out.println("Combien d'allumettes voulez vous enlever : 1, 2, ou 3 : ");
+            nbAllumDem = sca.nextInt();
+        } while(nbAllumDem<1 || nbAllumDem>3);
+        return nbAllumDem;
     }
 
     /**
@@ -269,5 +372,6 @@ public class GameController {
 /*
     public String getGagnant() { return "Le joueur " + partie.getJoueur(0).toString() + " a gagné la partie !"; }
 */
+
 
 }
