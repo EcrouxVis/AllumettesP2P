@@ -49,7 +49,7 @@ public class GameController {
     public void connecterClient() {
         System.out.println("connection client");
         try {
-            client = new Socket( getIpVoisin(), 50000 );
+            client = new Socket( getIpVoisin(), 50001 );
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -80,12 +80,16 @@ public class GameController {
             bfr = new BufferedReader(new InputStreamReader(in));
             pw = new PrintWriter(new OutputStreamWriter(out));
 
+            System.out.println("buffers crees");
+
             // Création d'un jeton pour avoir le nombre de joueurs totaux
             int jeton = 1;
             pw.print(jeton);
+            System.out.println("jeton envoye");
 
             // Attente du retour du jeton
             jeton = bfr.read();
+            System.out.println("jeton recu");
             System.out.println("Nombre de joueurs total : " + jeton);
 
             // Initialise le nombre de joueurs au total
@@ -128,10 +132,10 @@ public class GameController {
             System.out.println("buffers crees");
 
             int jeton = bfr.read();
-            System.out.println("jeton envoye");
+            System.out.println("jeton recu");
             jeton ++;
             pw.print(jeton);
-            System.out.println("jeton recu");
+            System.out.println("jeton envoye");
 
             premierJoueur = false;
             jouerPartie();
