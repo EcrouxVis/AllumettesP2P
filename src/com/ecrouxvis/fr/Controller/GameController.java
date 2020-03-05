@@ -19,6 +19,7 @@ public class GameController {
 
     // Sockets du joueur
     private Socket client;
+    private Socket client2;
     private ServerSocket listener;
 
     // Buffer des clients
@@ -49,7 +50,7 @@ public class GameController {
     public void connecterClient() {
         System.out.println("connection client");
         try {
-            client = new Socket( getIpVoisin(), 50001 );
+            client2 = new Socket( getIpVoisin(), 50000 );
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -76,7 +77,7 @@ public class GameController {
             // Initialisation des buffer du client (voisin précédent)
             // Buffer client
             InputStream in = client.getInputStream();
-            OutputStream out = client.getOutputStream();
+            OutputStream out = client2.getOutputStream();
             bfr = new BufferedReader(new InputStreamReader(in));
             pw = new PrintWriter(new OutputStreamWriter(out));
 
