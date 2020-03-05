@@ -25,7 +25,7 @@ public class Main {
         System.out.print("Entrez l'adresse IP du voisin : ");
         String ipAdrr = sc.nextLine();
         gameController.setIpVoisin(ipAdrr);
-        
+
 
         // Création de la partie ...
         if(choix.equals("c")) { gameController.creerPartie(); }
@@ -35,6 +35,7 @@ public class Main {
 
         // Connexion au voisin
         gameController.connecterClient();
+        System.out.println("connection voisin");
 
         int nbAllumDem = 0;
         System.out.println("Il y a " + gameController.getNbAllumettes() + " allumettes");

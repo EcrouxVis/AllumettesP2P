@@ -46,6 +46,7 @@ public class GameController {
      * Connexion à un autre hôte
      */
     public void connecterClient() {
+        System.out.println("connection client");
         try {
             client = new Socket( getIpVoisin(), 50000 );
 
@@ -58,6 +59,7 @@ public class GameController {
      * Lance une partie
      */
     public void creerPartie() {
+        System.out.println("creation partie");
         partie = new Partie();
 
         try {
@@ -99,6 +101,7 @@ public class GameController {
      * Rejoint une partie en cours
      */
     public void rejoindrePartie() {
+        System.out.println("rejoindre partie");
         partie = new Partie();
 
         try {
@@ -133,6 +136,7 @@ public class GameController {
      * Jouer une partie en tant que client
      */
     public void jouerPartie() {
+        System.out.println("jouer partie");
         try {
             // Partie en cours
             while (partie.getNbJoueur() > 1){
@@ -206,6 +210,7 @@ public class GameController {
      * @return le nombre d'allumettes en jeu ou -1 si erreur
      */
     public int enleverAllumettes(int nb) {
+        System.out.println("enlever allumette");
         if( nb > 0 && nb < 4 ) {
             joueurJoue = true;
             partie.removeAllumette(nb);
