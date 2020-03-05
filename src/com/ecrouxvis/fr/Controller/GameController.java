@@ -28,6 +28,14 @@ public class GameController {
     }
 
 
+    public void connecterClient() {
+        try {
+            client = new Socket( getIpVoisin(), 50000 );
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     /**
      * Lance une partie
      */
@@ -38,6 +46,7 @@ public class GameController {
         try {
             listener = new ServerSocket(50000);
             client = listener.accept();
+            System.out.println(client);
 
             InputStream in = client.getInputStream();
             OutputStream out = client.getOutputStream();

@@ -12,10 +12,15 @@ public class Main {
         Scanner sc = new Scanner(System.in);
 
         GameController gameController = new GameController();
+
+        gameController.setIpVoisin("172.20.10.7");
+
+        gameController.connecterClient();
+
         //creation de la partie ...
         gameController.creerPartie();
-        gameController.setIpVoisin("127.0.0.0");
-        int nbAllumDem;
+
+        int nbAllumDem = 0;
         System.out.println("Il y a " + gameController.getNbAllumettes() + " allumettes");
 
         while(true){
