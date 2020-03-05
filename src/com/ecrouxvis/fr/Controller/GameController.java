@@ -71,13 +71,13 @@ public class GameController {
             System.out.println(client);
 
             // Connexion au voisin
-            this.connecterClient();
-            System.out.println("connection voisin");
+            //this.connecterClient();
+            //System.out.println("connection voisin");
 
             // Initialisation des buffer du client (voisin précédent)
             // Buffer client
             InputStream in = client.getInputStream();
-            OutputStream out = client2.getOutputStream();
+            OutputStream out = client.getOutputStream();
             bfr = new BufferedReader(new InputStreamReader(in));
             pw = new PrintWriter(new OutputStreamWriter(out));
 
@@ -86,6 +86,7 @@ public class GameController {
             // Création d'un jeton pour avoir le nombre de joueurs totaux
             int jeton = 1;
             pw.print(jeton);
+            pw.flush();
             System.out.println("jeton envoye");
 
             // Attente du retour du jeton
@@ -117,8 +118,8 @@ public class GameController {
 
         try {
             // Connexion au voisin
-            this.connecterClient();
-            System.out.println("connection voisin");
+            //this.connecterClient();
+            //System.out.println("connection voisin");
 
             listener = new ServerSocket(50000);
             client = listener.accept();
@@ -136,6 +137,7 @@ public class GameController {
             System.out.println("jeton recu");
             jeton ++;
             pw.print(jeton);
+            pw.flush();
             System.out.println("jeton envoye");
 
             premierJoueur = false;
@@ -158,11 +160,14 @@ public class GameController {
         System.out.println("jouer partie");
         try {
             // Partie en cours
-            while (partie.getNbJoueur() > 1){
+            do{
 
                 // Lecture des informations de partie
 
-                if(premierJoueur) {
+                if(!premierJoueur) {
+
+                    System.out.println("reception infos");
+
                     // Nombre de joueurs
                     int nbJoueurs = bfr.read();
                     System.out.println(nbJoueurs);
@@ -176,8 +181,8 @@ public class GameController {
 
                 // Je ne joue que si je n'ai pas encore perdu
                 if (monEtat) {
-                    // attendre l'input pour enlever des allumettes
-                    retirerAllumette();
+
+                    enleverAllumettes(retirerAllumette());
 
                     //while (!joueurJoue) {}
 
@@ -186,44 +191,33 @@ public class GameController {
                     // Puis on commence une nouvelle manche
                     if (partie.getNbAllumette() == 0){
                         this.monEtat = false;
+                        System.out.println("j'ai perdu");
                         partie.nouvelleManche();
                     }
                 }
-
+                System.out.println("envoi des infos");
                 pw.print(getNbJoueurs());
                 pw.print(getNbAllumettes());
-            }
+            } while (partie.getNbJoueur() > 1);
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        System.out.println("fin de jouer partie");
     }
 
-    private void retirerAllumette() {
-        // Indique la fin de partie si égal à true
-        boolean finPartie = false;
+    private int retirerAllumette() {
 
         Scanner sca = new Scanner(System.in);
 
         int nbAllumDem = 0;
 
-        System.out.println("Il y a " + this.getNbAllumettes() + " allumettes");
-
-        while(!finPartie){
             do {
                 System.out.println("Combien d'allumettes voulez vous enlever : 1, 2, ou 3 : ");
                 nbAllumDem = sca.nextInt();
             } while(nbAllumDem<1 || nbAllumDem>3);
 
-            int nbAllumRestantes = this.enleverAllumettes(nbAllumDem);
-
-            // Si on rencontre le cas d'erreur, la partie est terminé
-            if( nbAllumRestantes == -1 ) {
-                finPartie = true;
-            } else {
-                // Sinon, la partie continue
-                System.out.println("Il reste "+ nbAllumRestantes +" allumettes");
-            }
-        }
+            return nbAllumDem;
     }
 
     /**
