@@ -144,6 +144,8 @@ public class GameController {
             partie.setNbJoueur(jeton);
             partie.calculNbAllumette();
 
+            System.out.println(getNbAllumettes());
+
             jouerPartie();
 
             // Fermeture des buffers
@@ -180,13 +182,14 @@ public class GameController {
 
             System.out.println("buffers crees");
 
+            /*
             int jeton = Integer.parseInt(bfr.readLine());
             System.out.println("jeton recu");
             jeton ++;
             pw.print(String.valueOf(jeton));
             pw.flush();
             System.out.println("jeton envoye");
-
+            */
             // Attente du retour du jeton
             //jeton = Integer.parseInt(bfr.readLine());;
             //System.out.println("jeton recu");
@@ -208,7 +211,7 @@ public class GameController {
             System.out.println("J'ai reçu [" + st + "]");
 
 
-            jeton = Integer.parseInt(st);
+            int jeton = Integer.parseInt(st);
             System.out.println("jeton recu");
             System.out.println("Nombre de joueurs total : " + jeton);
 
@@ -227,14 +230,6 @@ public class GameController {
             }
 
             System.out.println("jeton envoye");
-
-
-
-
-
-
-
-
 
 
 
@@ -270,14 +265,62 @@ public class GameController {
                     System.out.println("reception infos");
 
                     // Nombre de joueurs
-                    int nbJoueurs = Integer.parseInt(bfr.readLine());
+                    //int nbJoueurs = Integer.parseInt(bfr.readLine());
+                    //System.out.println(nbJoueurs);
+                    //partie.setNbJoueur(nbJoueurs);
+
+
+                    DatagramSocket s = new DatagramSocket(50000);
+                    byte[] datarecu = new byte[8];
+                    DatagramPacket paquet = new DatagramPacket(datarecu, datarecu.length);
+
+
+                    System.out.println("Attente de réception du paquet.");
+                    try {
+                        s.receive(paquet);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    String st = new String(paquet.getData(), 0, paquet.getLength());
+                    System.out.println("J'ai reçu [" + st + "]");
+
+
+                    int nbJoueurs = Integer.parseInt(st);
                     System.out.println(nbJoueurs);
                     partie.setNbJoueur(nbJoueurs);
 
+
+
+
                     // Nombre d'allumettes restantes
-                    int nbAllumettes = Integer.parseInt(bfr.readLine());
-                    System.out.print(nbAllumettes);
-                    partie.setNbAllumette(nbAllumettes);
+                    //int nbAllumettes = Integer.parseInt(bfr.readLine());
+                    //System.out.print(nbAllumettes);
+                    //partie.setNbAllumette(nbAllumettes);
+
+
+                    DatagramSocket s2 = new DatagramSocket(50000);
+                    byte[] datarecu2 = new byte[8];
+                    DatagramPacket paquet2 = new DatagramPacket(datarecu, datarecu.length);
+
+
+                    System.out.println("Attente de réception du paquet.");
+                    try {
+                        s.receive(paquet2);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    String st2 = new String(paquet2.getData(), 0, paquet2.getLength());
+                    System.out.println("J'ai reçu [" + st2 + "]");
+
+
+                    int nbAllumettes = Integer.parseInt(st);
+                    System.out.println(nbAllumettes);
+                    partie.setNbJoueur(nbAllumettes);
+
+
+
+
+
                 }
 
                 premierJoueur=false;
@@ -300,10 +343,38 @@ public class GameController {
                 }
                 System.out.println("envoi des infos");
                 //pw.print(getNbJoueurs());
-                pw.print(String.valueOf(getNbJoueurs()));
-                pw.flush();
-                pw.print(String.valueOf(getNbAllumettes()));
-                pw.flush();
+                //pw.print(String.valueOf(getNbJoueurs()));
+                //pw.flush();
+
+                byte[] data = Integer.toString(getNbJoueurs()).getBytes();
+
+                try {
+                    InetSocketAddress sa = new InetSocketAddress(getIpVoisin(), 50000);
+                    DatagramSocket s2 = new DatagramSocket();
+                    DatagramPacket paquet2 = new DatagramPacket(data, data.length, sa);
+                    s2.send(paquet2);									/*	on envoie l'entier au serveur	*/
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    System.exit(1);
+                }
+
+
+
+                byte[] data2 = Integer.toString(getNbAllumettes()).getBytes();
+
+                try {
+                    InetSocketAddress sa = new InetSocketAddress(getIpVoisin(), 50000);
+                    DatagramSocket s2 = new DatagramSocket();
+                    DatagramPacket paquet2 = new DatagramPacket(data2, data2.length, sa);
+                    s2.send(paquet2);									/*	on envoie l'entier au serveur	*/
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    System.exit(1);
+                }
+
+
+                //pw.print(String.valueOf(getNbAllumettes()));
+                //pw.flush();
             } while (partie.getNbJoueur() > 1);
         } catch (IOException e) {
             e.printStackTrace();

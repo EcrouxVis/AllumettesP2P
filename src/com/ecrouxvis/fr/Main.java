@@ -2,6 +2,7 @@ package com.ecrouxvis.fr;
 
 import com.ecrouxvis.fr.Controller.GameController;
 
+import java.net.SocketException;
 import java.util.Scanner;
 
 public class Main {
@@ -16,7 +17,12 @@ public class Main {
         Scanner sc = new Scanner(System.in);
 
         // Instanciation du controller
-        GameController gameController = new GameController();
+        GameController gameController = null;
+        try {
+            gameController = new GameController();
+        } catch (SocketException e) {
+            e.printStackTrace();
+        }
 
         System.out.print("creer (c) ou rejoindre (r) une partie");
         String choix = sc.nextLine();
