@@ -26,10 +26,6 @@ public class Main {
         String ipAdrr = sc.nextLine();
         gameController.setIpVoisin(ipAdrr);
 
-        // Connexion au voisin
-        gameController.connecterClient();
-        System.out.println("connection voisin");
-
         // Création de la partie ...
         if(choix.equals("c")) { gameController.creerPartie(); }
 

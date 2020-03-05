@@ -64,9 +64,14 @@ public class GameController {
         partie = new Partie();
 
         try {
+
             listener = new ServerSocket(50000);
             client = listener.accept();
             System.out.println(client);
+
+            // Connexion au voisin
+            this.connecterClient();
+            System.out.println("connection voisin");
 
             // Initialisation des buffer du client (voisin précédent)
             // Buffer client
@@ -106,6 +111,10 @@ public class GameController {
         partie = new Partie();
 
         try {
+            // Connexion au voisin
+            this.connecterClient();
+            System.out.println("connection voisin");
+
             listener = new ServerSocket(50000);
             client = listener.accept();
             System.out.println(client);
